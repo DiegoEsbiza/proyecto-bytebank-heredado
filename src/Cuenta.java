@@ -6,9 +6,9 @@ public abstract class Cuenta {
 	private Cliente titular = new Cliente();
 
 	private static int total;
-	
+
 	public Cuenta() {
-		
+
 	}
 
 	public Cuenta(int agencia, int numero) {
@@ -28,18 +28,22 @@ public abstract class Cuenta {
 	// No retorna valor
 	public abstract void depositar(double valor);
 
-	public boolean retirar(double valor) {
-		if (this.saldo >= valor) {
-			this.saldo -= valor;
-			return true;
+	public void retirar(double valor) throws SaldoInsuficienteException {
+		if(this.saldo<valor) {
+			throw new SaldoInsuficienteException("No posee fondos suficientes para realizar la operacion");
 		}
-		return false;
-
+		this.saldo -= valor;
+	
 	}
 
 	public boolean transferir(double valor, Cuenta cuenta) {
 		if (this.saldo >= valor) {
-			this.retirar(valor);
+			try {
+				this.retirar(valor);
+			} catch (SaldoInsuficienteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			cuenta.depositar(valor);
 			return true;
 		}
